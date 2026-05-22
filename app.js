@@ -3,24 +3,40 @@ let currentQuestionIndex = 0;
 let sessionCorrect = 0;
 let sessionWrong = 0;
 
+let answered = false;
+
 let globalCorrect =
   Number(localStorage.getItem("globalCorrect")) || 0;
 
 let globalWrong =
   Number(localStorage.getItem("globalWrong")) || 0;
 
-const questionElement = document.getElementById("question");
-const answersElement = document.getElementById("answers");
-const questionNumber = document.getElementById("questionNumber");
-const remainingQuestions = document.getElementById("remainingQuestions");
+const questionElement =
+  document.getElementById("question");
 
-const correctCount = document.getElementById("correctCount");
-const wrongCount = document.getElementById("wrongCount");
+const answersElement =
+  document.getElementById("answers");
 
-const progressBar = document.getElementById("progressBar");
+const questionNumber =
+  document.getElementById("questionNumber");
 
-const percentage = document.getElementById("percentage");
-const totalPlayed = document.getElementById("totalPlayed");
+const remainingQuestions =
+  document.getElementById("remainingQuestions");
+
+const correctCount =
+  document.getElementById("correctCount");
+
+const wrongCount =
+  document.getElementById("wrongCount");
+
+const progressBar =
+  document.getElementById("progressBar");
+
+const percentage =
+  document.getElementById("percentage");
+
+const totalPlayed =
+  document.getElementById("totalPlayed");
 
 const shuffledQuestions = [...questions];
 
@@ -32,19 +48,25 @@ function shuffleArray(array) {
 
   for (let i = array.length - 1; i > 0; i--) {
 
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(
+      Math.random() * (i + 1)
+    );
 
-    [array[i], array[j]] = [array[j], array[i]];
+    [array[i], array[j]] =
+      [array[j], array[i]];
   }
 }
 
 function getRandomQuestion() {
 
-  if (usedQuestions.length === shuffledQuestions.length) {
+  if (
+    usedQuestions.length >=
+    shuffledQuestions.length
+  ) {
 
-    usedQuestions = [];
+    finishQuiz();
 
-    shuffleArray(shuffledQuestions);
+    return null;
   }
 
   let randomIndex;
@@ -52,19 +74,27 @@ function getRandomQuestion() {
   do {
 
     randomIndex = Math.floor(
-      Math.random() * shuffledQuestions.length
+      Math.random() *
+      shuffledQuestions.length
     );
 
-  } while (usedQuestions.includes(randomIndex));
+  } while (
+    usedQuestions.includes(randomIndex)
+  );
 
   usedQuestions.push(randomIndex);
 
   return shuffledQuestions[randomIndex];
 }
 
-let currentQuestion = getRandomQuestion();
+let currentQuestion =
+  getRandomQuestion();
 
 function loadQuestion() {
+
+  if (!currentQuestion) return;
+
+  answered = false;
 
   answersElement.innerHTML = "";
 
@@ -74,23 +104,35 @@ function loadQuestion() {
   questionNumber.textContent =
     `Savol ${usedQuestions.length}`;
 
-  remainingQuestions.textContent =
-    `${shuffledQuestions.length - usedQuestions.length} ta qoldi`;
+  const remain =
+    shuffledQuestions.length -
+    usedQuestions.length;
 
-  const answers = [...currentQuestion.answers];
+  remainingQuestions.textContent =
+    remain > 0
+      ? `${remain} ta qoldi`
+      : "Oxirgi savol";
+
+  const answers =
+    [...currentQuestion.answers];
 
   shuffleArray(answers);
 
   answers.forEach(answer => {
 
-    const button = document.createElement("button");
+    const button =
+      document.createElement("button");
 
     button.className = "answer-btn";
 
-    button.innerText = answer.text;
+    button.innerText =
+      answer.text;
 
     button.onclick = () =>
-      selectAnswer(button, answer.correct);
+      selectAnswer(
+        button,
+        answer.correct
+      );
 
     answersElement.appendChild(button);
   });
@@ -98,10 +140,19 @@ function loadQuestion() {
   updateProgress();
 }
 
-function selectAnswer(button, isCorrect) {
+function selectAnswer(
+  button,
+  isCorrect
+) {
+
+  if (answered) return;
+
+  answered = true;
 
   const buttons =
-    document.querySelectorAll(".answer-btn");
+    document.querySelectorAll(
+      ".answer-btn"
+    );
 
   buttons.forEach(btn => {
     btn.disabled = true;
@@ -116,7 +167,9 @@ function selectAnswer(button, isCorrect) {
 
   } else {
 
-    button.classList.add("wrong-answer");
+    button.classList.add(
+      "wrong-answer"
+    );
 
     sessionWrong++;
     globalWrong++;
@@ -126,13 +179,16 @@ function selectAnswer(button, isCorrect) {
       const found =
         currentQuestion.answers.find(
           a =>
-            a.text === btn.innerText &&
+            a.text ===
+              btn.innerText &&
             a.correct
         );
 
       if (found) {
 
-        btn.classList.add("correct");
+        btn.classList.add(
+          "correct"
+        );
       }
     });
   }
@@ -142,16 +198,34 @@ function selectAnswer(button, isCorrect) {
 
 function nextQuestion() {
 
-  currentQuestionIndex++;
+  if (!answered) {
 
-  currentQuestion = getRandomQuestion();
+    alert(
+      "Avval javob tanlang"
+    );
+
+    return;
+  }
+
+  currentQuestion =
+    getRandomQuestion();
 
   loadQuestion();
 }
 
 function randomQuestion() {
 
-  currentQuestion = getRandomQuestion();
+  if (!answered) {
+
+    alert(
+      "Avval javob tanlang"
+    );
+
+    return;
+  }
+
+  currentQuestion =
+    getRandomQuestion();
 
   loadQuestion();
 }
@@ -161,27 +235,60 @@ function restartQuiz() {
   sessionCorrect = 0;
   sessionWrong = 0;
 
+  answered = false;
+
   currentQuestionIndex = 0;
 
   usedQuestions = [];
 
-  shuffleArray(shuffledQuestions);
+  shuffleArray(
+    shuffledQuestions
+  );
 
   correctCount.innerText = 0;
   wrongCount.innerText = 0;
 
-  currentQuestion = getRandomQuestion();
+  currentQuestion =
+    getRandomQuestion();
 
   updateStats();
 
   loadQuestion();
 }
 
+function finishQuiz() {
+
+  setTimeout(() => {
+
+    const result =
+      Math.floor(
+        (
+          sessionCorrect /
+          (sessionCorrect +
+            sessionWrong)
+        ) * 100
+      ) || 0;
+
+    alert(
+`Test tugadi!
+
+To‘g‘ri: ${sessionCorrect}
+Xato: ${sessionWrong}
+Natija: ${result}%`
+    );
+
+    restartQuiz();
+
+  }, 300);
+}
+
 function updateProgress() {
 
   const percent =
-    (usedQuestions.length /
-      shuffledQuestions.length) * 100;
+    (
+      usedQuestions.length /
+      shuffledQuestions.length
+    ) * 100;
 
   progressBar.style.width =
     percent + "%";
@@ -206,16 +313,21 @@ function updateStats() {
   );
 
   const total =
-    globalCorrect + globalWrong;
+    globalCorrect +
+    globalWrong;
 
-  totalPlayed.innerText = total;
+  totalPlayed.innerText =
+    total;
 
   let result = 0;
 
   if (total > 0) {
 
     result = Math.floor(
-      (globalCorrect / total) * 100
+      (
+        globalCorrect /
+        total
+      ) * 100
     );
   }
 
@@ -225,9 +337,13 @@ function updateStats() {
 
 function clearStatistics() {
 
-  localStorage.removeItem("globalCorrect");
+  localStorage.removeItem(
+    "globalCorrect"
+  );
 
-  localStorage.removeItem("globalWrong");
+  localStorage.removeItem(
+    "globalWrong"
+  );
 
   globalCorrect = 0;
   globalWrong = 0;
@@ -237,15 +353,24 @@ function clearStatistics() {
 
 document
   .getElementById("nextBtn")
-  .addEventListener("click", nextQuestion);
+  .addEventListener(
+    "click",
+    nextQuestion
+  );
 
 document
   .getElementById("randomBtn")
-  .addEventListener("click", randomQuestion);
+  .addEventListener(
+    "click",
+    randomQuestion
+  );
 
 document
   .getElementById("restartBtn")
-  .addEventListener("click", restartQuiz);
+  .addEventListener(
+    "click",
+    restartQuiz
+  );
 
 updateStats();
 
