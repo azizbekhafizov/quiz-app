@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History Test Platform</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="background"></div>
+
+  <div class="app">
+
+    <header>
+      <div>
+        <h1>Jahon Tarixi Test Platform</h1>
+        <p>Professional Random Quiz System</p>
+      </div>
+
+      <div class="top-right">
+        <div class="score-box">
+          <span>To‘g‘ri:</span>
+          <strong id="correctCount">0</strong>
+        </div>
+
+        <div class="score-box wrong">
+          <span>Xato:</span>
+          <strong id="wrongCount">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <div class="progress-container">
+      <div id="progressBar"></div>
+    </div>
+
+    <div class="question-card">
+
+      <div class="question-top">
+        <span id="questionNumber">1</span>
+        <span id="remainingQuestions"></span>
+      </div>
+
+      <h2 id="question"></h2>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="buttons">
+        <button id="nextBtn">Keyingi Savol</button>
+        <button id="randomBtn">Random</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+
+    </div>
+
+    <div class="stats-card">
+      <h3>Statistika</h3>
+
+      <div class="stats-grid">
+        <div>
+          <span>Umumiy Test:</span>
+          <strong id="totalPlayed">0</strong>
+        </div>
+
+        <div>
+          <span>Foiz:</span>
+          <strong id="percentage">0%</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
