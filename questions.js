@@ -188,6 +188,24 @@ const questions = [
     { text: "G.Shliman", correct: true },
     { text: "K.Blegen", correct: false }
   ]
+},
+{
+  question:"nimadir savol",
+  answers:[
+    {text:"javob1", correct: false},
+    // {text:"javob2", correct: false}, noto'g'rijavob
+    // {text:"javob3", correct: true},  to'g'rijavob
+    {text:"javob4", correct: false}
+  ]
+},
+{
+  question:"nimadir savol",
+    answers:[
+    {text:"javob1", correct: false},
+    // {text:"hjdjd", correct: false}, noto'g'rijavob
+    // {text:"javob3", correct: true},  to'g'rijavob
+    {text:"javob4", correct: false}
+  ]
 }
 
 ];
